@@ -19,7 +19,7 @@ def health() -> dict:
 def create_order(payload: OrderCreate) -> Order:
     if len(payload.items) > settings.max_items_per_order:
         raise HTTPException(422, f"max {settings.max_items_per_order} items per order")
-    order = Order(**payload.dict())
+    order = Order(**payload.model_dump())
     return store.add(order)
 
 
@@ -51,5 +51,5 @@ def update_status(order_id: UUID, payload: OrderStatusUpdate) -> Order:
         order = store.get(order_id)
     except KeyError:
         raise HTTPException(404, "order not found")
-    updated = order.copy(update={"status": payload.status})
+    updated = order.model_copy(update={"status": payload.status})
     return store.update(updated)

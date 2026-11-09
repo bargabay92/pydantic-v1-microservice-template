@@ -11,17 +11,17 @@ class OrderStore:
         self._orders: Dict[UUID, dict] = {}
 
     def add(self, order: Order) -> Order:
-        self._orders[order.id] = order.dict()
+        self._orders[order.id] = order.model_dump()
         return order
 
     def get(self, order_id: UUID) -> Order:
-        return Order.parse_obj(self._orders[order_id])
+        return Order.model_validate(self._orders[order_id])
 
     def list(self) -> List[Order]:
-        return [Order.parse_obj(o) for o in self._orders.values()]
+        return [Order.model_validate(o) for o in self._orders.values()]
 
     def update(self, order: Order) -> Order:
-        self._orders[order.id] = order.dict()
+        self._orders[order.id] = order.model_dump()
         return order
 
 
